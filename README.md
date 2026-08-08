@@ -11,10 +11,13 @@ There is 2nd button that Amputate all visible corpses.
 There is MCM config option to only elable those 2 buttons when there are X enemies or less on the floor. If disabled you should always able to use those button.
 
 Now. For Common questions.
+
 Q1. Does this work with Marauder?
+
 No idea.
 
 Q2. Is this OP with floor scanning?
+
 Yes, because it makes all tiles visible.
 And no, there is no way to fix it. (or I am too lazy to)
 
