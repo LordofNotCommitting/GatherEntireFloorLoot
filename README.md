@@ -1,10 +1,10 @@
 Ok, you cleared most floors by killing 200 enemies.
 Now. Gathering all this crap will take 30 minutes.
 
-**Need to restart the game after MCM config setup for this mod to take effect**
-
 Skip all that stuff by having this mod.
 This mod will gather all items from all visible containers and corpses. And then, sort it once. Accessible from Shuttle or Elevator.
+
+**Need to restart the game after MCM config setup for this mod to take effect**
 
 There is 2nd button that Amputate all visible corpses.
 
