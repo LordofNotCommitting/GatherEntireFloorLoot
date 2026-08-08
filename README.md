@@ -13,9 +13,10 @@ There is MCM config option to only elable those 2 buttons when there are X enemi
 
 Now. For Common questions.
 
-Q1. Does this work with Marauder?
+Q1. Does this work with Marauder/Laksha/Marika/Magnum upgrade/etc?
 
-No idea.
+Yes. All those skills function outside this mod, and therefore it can work with this mod.
+
 
 Q2. Is this OP with floor scanning?
 
