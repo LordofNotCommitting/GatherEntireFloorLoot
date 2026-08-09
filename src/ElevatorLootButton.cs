@@ -394,15 +394,31 @@ namespace GatherEntireFloorLoot
 
         public static void Fixed_StackItemOnFloor(BasePickupItem basePickupItem, ItemStorage itemOnFloor)
         {
-            ItemOnFloorSystem.StackItemOnFloor(basePickupItem, itemOnFloor);
-
-            //item somehow have 0 count.
-            if (basePickupItem.StackCount <= 0)
+            bool skip_flag = false;
+            SpaceTime gameTimeNow = SingletonMonoBehaviour<ItemFactory>.Instance.GetGameTimeNow();
+            if (basePickupItem.IsStackable)
             {
-                //blow this shit up
-                basePickupItem.Storage.Remove(basePickupItem, true);
-                basePickupItem.Storage = null;
+                foreach (BasePickupItem floorbasePickupItem in itemOnFloor.Items)
+                {
+                    if (ItemInteractionSystem.CanMerge(floorbasePickupItem, basePickupItem))
+                    {
+                        ItemInteractionSystem.Merge(gameTimeNow, basePickupItem, floorbasePickupItem, ref skip_flag);
+                        if (skip_flag)
+                        {
+                            break;
+                        }
+                    }
+                }
             }
+            if (!skip_flag) {
+
+                if (!itemOnFloor.TryPutItem(basePickupItem, CellPosition.Zero, false, true))
+                {
+                    itemOnFloor.ExpandHeight(1);
+                    itemOnFloor.AddItemAndReshuffleOptional(basePickupItem);
+                }
+            }
+
         }
 
 

@@ -13,10 +13,8 @@ using UnityEngine;
 
 namespace GatherEntireFloorLoot
 {
-    // Token: 0x02000004 RID: 4
     public class ModConfigData
     {
-        // Token: 0x0600000E RID: 14 RVA: 0x0000221C File Offset: 0x0000041C
         public ModConfigData(string ConfigPath)
         {
             this.ConfigPath = ConfigPath;
@@ -25,71 +23,52 @@ namespace GatherEntireFloorLoot
             this.LoadConfig();
         }
 
-        // Token: 0x0600000F RID: 15 RVA: 0x00002247 File Offset: 0x00000447
         public void RegisterModConfigData(string menuName)
         {
             ModConfigMenuAPI.RegisterModConfig(menuName, this.ConfigValues, new ModConfigMenuAPI.ConfigStoredDelegate(this.OnSave));
         }
 
-        // Token: 0x06000010 RID: 16 RVA: 0x00002262 File Offset: 0x00000462
         public void AddConfigHeader(string headerKey, string locKey = null)
         {
-            this.GetKeyEnsureLocalization(headerKey, ModConfigData.KeyType.Header, locKey);
+            //this.GetKeyEnsureLocalization(headerKey, ModConfigData.KeyType.Header, locKey);
         }
 
-        // Token: 0x06000011 RID: 17 RVA: 0x00002270 File Offset: 0x00000470
         public void AddConfigValue(string headerKey, string valueKey, string stringKey)
         {
-            string keyEnsureLocalization = this.GetKeyEnsureLocalization(stringKey, ModConfigData.KeyType.Description, valueKey);
-            StringConfig item = new StringConfig(valueKey, keyEnsureLocalization, headerKey);
+            StringConfig item = new StringConfig(valueKey, stringKey, headerKey);
             this.ConfigValues.Add(item);
         }
 
-        // Token: 0x06000012 RID: 18 RVA: 0x0000229C File Offset: 0x0000049C
         public void AddConfigValue(string headerKey, string valueKey, object defaultValue, string labelKey, string tooltipKey)
         {
-            string keyEnsureLocalization = this.GetKeyEnsureLocalization(headerKey, ModConfigData.KeyType.Header, valueKey);
-            string keyEnsureLocalization2 = this.GetKeyEnsureLocalization(labelKey, ModConfigData.KeyType.Label, valueKey);
-            string keyEnsureLocalization3 = this.GetKeyEnsureLocalization(tooltipKey, ModConfigData.KeyType.Tooltip, valueKey);
             if (!this.Settings.ContainsKey(valueKey))
             {
                 this.Settings.Add(valueKey, defaultValue);
             }
-            ConfigValue item = new ConfigValue(valueKey, this.Settings[valueKey], keyEnsureLocalization, defaultValue, keyEnsureLocalization3, keyEnsureLocalization2);
+            ConfigValue item = new ConfigValue(valueKey, this.Settings[valueKey], headerKey, defaultValue, tooltipKey, labelKey);
             this.ConfigValues.Add(item);
         }
 
-        // Token: 0x06000013 RID: 19 RVA: 0x00002308 File Offset: 0x00000508
         public void AddConfigValue(string headerKey, string valueKey, int defaultValue, int min, int max, string labelKey, string tooltipKey)
         {
-            string keyEnsureLocalization = this.GetKeyEnsureLocalization(headerKey, ModConfigData.KeyType.Header, valueKey);
-            string keyEnsureLocalization2 = this.GetKeyEnsureLocalization(labelKey, ModConfigData.KeyType.Label, valueKey);
-            string keyEnsureLocalization3 = this.GetKeyEnsureLocalization(tooltipKey, ModConfigData.KeyType.Tooltip, valueKey);
             if (!this.Settings.ContainsKey(valueKey))
             {
                 this.Settings.Add(valueKey, defaultValue);
             }
-            RangeConfig<int> item = new RangeConfig<int>(valueKey, this.GetConfigValue<int>(valueKey, 0), defaultValue, min, max, keyEnsureLocalization, keyEnsureLocalization3, keyEnsureLocalization2);
+            RangeConfig<int> item = new RangeConfig<int>(valueKey, this.GetConfigValue<int>(valueKey, 0), defaultValue, min, max, headerKey, tooltipKey, labelKey);
             this.ConfigValues.Add(item);
         }
 
-
-
-        // Token: 0x06000014 RID: 20 RVA: 0x00002378 File Offset: 0x00000578
         public void AddConfigValue(string headerKey, string valueKey, string defaultValue, List<object> valueList, string labelKey, string tooltipKey)
         {
-            string keyEnsureLocalization = this.GetKeyEnsureLocalization(headerKey, ModConfigData.KeyType.Header, valueKey);
-            string keyEnsureLocalization2 = this.GetKeyEnsureLocalization(labelKey, ModConfigData.KeyType.Label, valueKey);
-            string keyEnsureLocalization3 = this.GetKeyEnsureLocalization(tooltipKey, ModConfigData.KeyType.Tooltip, valueKey);
             if (!this.Settings.ContainsKey(valueKey))
             {
                 this.Settings.Add(valueKey, defaultValue);
             }
-            DropdownConfig item = new DropdownConfig(valueKey, this.GetConfigValue<string>(valueKey, null), keyEnsureLocalization, defaultValue, keyEnsureLocalization3, keyEnsureLocalization2, valueList);
+            DropdownConfig item = new DropdownConfig(valueKey, this.GetConfigValue<string>(valueKey, null), headerKey, defaultValue, tooltipKey, labelKey, valueList);
             this.ConfigValues.Add(item);
         }
 
-        // Token: 0x06000015 RID: 21 RVA: 0x000023E4 File Offset: 0x000005E4
         public T GetConfigValue<T>(string key, T fallback = default(T))
         {
             object value;
@@ -108,7 +87,6 @@ namespace GatherEntireFloorLoot
             return fallback;
         }
 
-        // Token: 0x06000016 RID: 22 RVA: 0x00002434 File Offset: 0x00000634
         public T GetDropdownValue<T>(string key, T fallback = default(T))
         {
             object obj;
@@ -145,7 +123,6 @@ namespace GatherEntireFloorLoot
             return fallback;
         }
 
-        // Token: 0x06000017 RID: 23 RVA: 0x000024F8 File Offset: 0x000006F8
         public TEnum GetEnumValue<TEnum>(string key, TEnum fallback = default(TEnum)) where TEnum : struct, Enum
         {
             Debug.Log("START " + key);
@@ -200,40 +177,6 @@ namespace GatherEntireFloorLoot
             return result;
         }
 
-        // Token: 0x06000018 RID: 24 RVA: 0x00002608 File Offset: 0x00000808
-        private string GetKeyEnsureLocalization(string key, ModConfigData.KeyType keyType, string locKey = null)
-        {
-            if (!key.StartsWith("STRING:") || locKey == null)
-            {
-                return key;
-            }
-            string value = key.Replace("STRING:", "");
-            string text = Plugin.ModAssemblyName + "." + locKey;
-            if (keyType == ModConfigData.KeyType.Header)
-            {
-                text += ".header";
-            }
-            else if (keyType == ModConfigData.KeyType.Label)
-            {
-                text += ".label";
-            }
-            else if (keyType == ModConfigData.KeyType.Tooltip)
-            {
-                text += ".tooltip";
-            }
-            else if (keyType == ModConfigData.KeyType.Description)
-            {
-                text += ".desc";
-            }
-            if (Localization.HasKey(text))
-            {
-                return text;
-            }
-            LocalizationHelper.AddKeyToAllDictionaries(text, value);
-            return text;
-        }
-
-        // Token: 0x06000019 RID: 25 RVA: 0x000026A0 File Offset: 0x000008A0
         private void CreateConfig()
         {
             if (!File.Exists(this.ConfigPath))
@@ -243,7 +186,6 @@ namespace GatherEntireFloorLoot
             }
         }
 
-        // Token: 0x0600001A RID: 26 RVA: 0x000026D0 File Offset: 0x000008D0
         private void LoadConfig()
         {
             if (!File.Exists(this.ConfigPath))
@@ -287,7 +229,6 @@ namespace GatherEntireFloorLoot
             }
         }
 
-        // Token: 0x0600001B RID: 27 RVA: 0x000027D4 File Offset: 0x000009D4
         private void SaveConfig()
         {
             if (!File.Exists(this.ConfigPath))
@@ -298,7 +239,6 @@ namespace GatherEntireFloorLoot
                                                 select string.Format("{0}={1}", entry.Key, entry.Value));
         }
 
-        // Token: 0x0600001C RID: 28 RVA: 0x00002829 File Offset: 0x00000A29
         protected virtual bool OnSave(Dictionary<string, object> newConfig, out string feedbackMessage)
         {
             feedbackMessage = "Saving";
@@ -307,25 +247,17 @@ namespace GatherEntireFloorLoot
             return true;
         }
 
-        // Token: 0x04000004 RID: 4
         private string ConfigPath;
 
-        // Token: 0x04000005 RID: 5
         private Dictionary<string, object> Settings;
 
-        // Token: 0x04000006 RID: 6
         private List<IConfigValue> ConfigValues;
 
-        // Token: 0x02000015 RID: 21
         public enum KeyType
         {
-            // Token: 0x04000034 RID: 52
             Header,
-            // Token: 0x04000035 RID: 53
             Label,
-            // Token: 0x04000036 RID: 54
             Tooltip,
-            // Token: 0x04000037 RID: 55
             Description
         }
     }

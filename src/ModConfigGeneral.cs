@@ -16,17 +16,18 @@ namespace GatherEntireFloorLoot
 
         public ModConfigGeneral(string ModName, string ConfigPath)
         {
+            //note: remove "STRING:" later.
             this.ModName = ModName;
             this.ModData = new ModConfigData(ConfigPath);
-            this.ModData.AddConfigHeader("STRING:General Settings", "general");
-            this.ModData.AddConfigValue("general", "Enemy_Count_Check_Bool", false, "STRING:Only Enable When Enemy Count is Low", "STRING:Turn this on to make button only appear when enemy count is low.");
-            this.ModData.AddConfigValue("general", "Enemy_Count_Check_Num", Enemy_Count_Check_Num_Array[0], Enemy_Count_Check_Num_Array[1], Enemy_Count_Check_Num_Array[2], "STRING:Enable When Enemy is Less than", "STRING:Set Threshold for above enemy count check for above setting.");
+            this.ModData.AddConfigHeader("General Settings", "general");
+            this.ModData.AddConfigValue("general", "Enemy_Count_Check_Bool", false, "Only Enable When Enemy Count is Low", "Turn this on to make button only appear when enemy count is low.");
+            this.ModData.AddConfigValue("general", "Enemy_Count_Check_Num", Enemy_Count_Check_Num_Array[0], Enemy_Count_Check_Num_Array[1], Enemy_Count_Check_Num_Array[2], "Enable When Enemy is Less than", "Set Threshold for above enemy count check for above setting.");
             //amp option?
 
-            this.ModData.AddConfigValue("general", "Disable_Amp_All", false, "STRING:Disable Amputate All", "STRING:Turn it off if you do not want it.");
-            this.ModData.AddConfigValue("general", "Amp_All_Uses_Dur", false, "STRING:Amp All Consume Durability", "STRING:Turn this on to make button require durability.");
+            this.ModData.AddConfigValue("general", "Disable_Amp_All", false, "Disable Amputate All", "Turn it off if you do not want it.");
+            this.ModData.AddConfigValue("general", "Amp_All_Uses_Dur", false, "Amp All Consume Durability", "Turn this on to make button require durability.");
 
-            this.ModData.AddConfigValue("general", "about_final", "STRING:<color=#f51b1b>The game must be restarted after setting then saving this config to take effect.</color>\n");
+            this.ModData.AddConfigValue("general", "about_final", "<color=#f51b1b>The game must be restarted after setting then saving this config to take effect.</color>\n");
             this.ModData.RegisterModConfigData(ModName);
         }
 
