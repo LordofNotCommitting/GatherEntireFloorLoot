@@ -31,3 +31,13 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=3286341389
 
 This mod allows sorting of floor items.
 https://steamcommunity.com/sharedfiles/filedetails/?id=3461186439
+
+This mod prevent 1 enemy from setting this item stack on fire and losing everything
+https://steamcommunity.com/sharedfiles/filedetails/?id=3598569203
+
+Changelog:
+
+v1.01:
+
+Fix issue with gathering item with stack usage.
+
