@@ -368,6 +368,12 @@ namespace GatherEntireFloorLoot
                             //basePickupItem.Storage.Remove(basePickupItem, true);
                             //basePickupItem.Storage = null;
                         }
+                        //whatever logic from RefreshAfterStorageChanged without being seen
+                        itemOnFloor._wasExplored = true;
+                        itemOnFloor._visualDirty = false;
+                        itemOnFloor.RefreshVisual();
+                        itemOnFloor.RefreshVisibility();
+                        itemOnFloor._spriteRenderer.enabled = false;
                     }
                 }
                 //then sort.
