@@ -9,13 +9,14 @@ namespace GatherEntireFloorLoot
         // Corrected line: standard getter and private setter
         public static MGSC.State ActiveState { get; private set; }
 
-        [HarmonyPatch(typeof(State), nameof(State.Resolve))]
+        [HarmonyPatch(typeof(SaveManager), nameof(SaveManager.LoadGame))]
         public static class StateResolvePatch
         {
-            static void Postfix(State __instance)
+            static void Postfix(SaveManager __instance)
             {
-                // Capture the live instance
-                ActiveState = __instance;
+                // Capture the live instance, slightly later.
+                //Plugin.Logger.Log("State Manager working.");
+                ActiveState = __instance._state;
             }
         }
     }
