@@ -37,6 +37,14 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=3598569203
 
 Changelog:
 
+v1.03:
+
+Ditch usage of ticking time bomb that is State.Resolve function.
+
+v1.02:
+
+Latest patch messes with item sprite while in fog of war which messes with item interaction. Now fixed.
+
 v1.01:
 
 Fix issue with gathering item with stack usage.
