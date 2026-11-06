@@ -7,6 +7,7 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.Pool;
 using static HarmonyLib.Code;
 using static Unity.IO.LowLevel.Unsafe.AsyncReadManagerMetrics;
 
@@ -24,6 +25,9 @@ namespace GatherEntireFloorLoot
 
         static bool Disable_Amp_All = Plugin.ConfigGeneral.ModData.GetConfigValue<bool>("Disable_Amp_All", false);
         static bool Amp_All_Uses_Dur = Plugin.ConfigGeneral.ModData.GetConfigValue<bool>("Amp_All_Uses_Dur", false);
+        static bool Amp_All_Optimizer = Plugin.ConfigGeneral.ModData.GetConfigValue<bool>("Amp_All_Optimizer", false);
+
+        
 
         static void Prefix(ElevatorWindow __instance)
         {
@@ -86,11 +90,17 @@ namespace GatherEntireFloorLoot
             MagnumProgression magnumProgression = StateManager.ActiveState.Get<MagnumProgression>();
             MapGrid mapGrid = StateManager.ActiveState.Get<MapGrid>();
 
+
+            List<MapObstacle> list = CollectionPool<List<MapObstacle>, MapObstacle>.Get();
+
             UI.Chain<InventoryScreen>().Show(false).Invoke(delegate (InventoryScreen v)
             {
                 
                 ItemsOnFloor _itemsOnFloor = StateManager.ActiveState.Get<ItemsOnFloor>();
                 ItemOnFloor pc_itemOnFloor = _itemsOnFloor.GetOrCreate(v._creatures.Player.CreatureData.Position);
+
+                List<BasePickupItem> temp_basepickupitems = new List<BasePickupItem>();
+
 
                 MapGrid temp_MapGrid = v._creatures.Player._mapGrid;
 
@@ -109,6 +119,8 @@ namespace GatherEntireFloorLoot
                         if (mapObstacle.CorpseStorage != null)
                         {
                             bool is_explored = false;
+
+
                             foreach (CellPosition cellPosition in mapObstacle.OccupiedCells)
                             {
                                 if (temp_MapGrid.GetCell(cellPosition.X, cellPosition.Y, true).IsExplored)
@@ -121,16 +133,65 @@ namespace GatherEntireFloorLoot
                             {
                                 //uuuh we just go through few things
                                 //Plugin.Logger.Log("" + mapObstacle.CorpseStorage);
-                                amp_issue = AmputateAllFromCorpseStorage(mapObstacle.CorpseStorage, v._creatures.Player, _itemsOnFloor, statistics, magnumProgression, mapGrid);
+                                if (!Amp_All_Optimizer)
+                                {
+                                    amp_issue = AmputateAllFromCorpseStorage(mapObstacle.CorpseStorage, v._creatures.Player, _itemsOnFloor, statistics, magnumProgression, mapGrid);
+                                    if (!amp_issue) 
+                                    {
+                                        list.Add(mapObstacle);
+                                    }
+                                }
+                                else 
+                                {
+                                    list.Add(mapObstacle);
+                                    //whatever logic from SpawnCorpsePile
+
+                                    foreach (string id in mapObstacle.CorpseStorage.CreatureData.WoundSlotMap.Keys)
+                                    {
+                                        WoundSlotRecord record = Data.WoundSlots.GetRecord(id, true);
+                                        bool flag = false;
+                                        foreach (BaseEffect baseEffect in mapObstacle.CorpseStorage.CreatureData.EffectsController)
+                                        {
+                                            BodyPartWound bodyPartWound = baseEffect as BodyPartWound;
+                                            if (bodyPartWound != null && bodyPartWound.IsAmputation && bodyPartWound.WoundSlotId == record.Id)
+                                            {
+                                                flag = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!flag && record.AmputatedDrop != null && record.AmputatedDrop.Count > 0)
+                                        {
+                                            string itemId = DropManager.GenerateDrop<string>(record.AmputatedDrop, null);
+                                            //mapObstacle.CorpseStorage.CreatureData.Inventory.BackpackStore.Add();
+                                            Fixed_StackItemOnFloor(SingletonMonoBehaviour<ItemFactory>.Instance.CreateForInventory(itemId, mapObstacle, false), pc_itemOnFloor.Storage);
+                                        }
+                                    }
+
+                                    /*
+                                    mapObstacle.ObstacleHealth.Health = 0;
+                                    foreach (MapObstacleComponent mapObstacleComponent in mapObstacle._comps)
+                                    {
+                                        mapObstacleComponent.OnMapObstacleHealthChanged(0f);
+                                    }
+                                    */
+                                }
+
                             }
                         }
                     }
+
+                    //remove all corpse storages, as per the 1.04
+                    foreach (MapObstacle mapObstacle2 in list)
+                    {
+                        mapObstacles.Remove(mapObstacle2);
+                    }
+
                 }
 
 
 
                 //make sound
-                if (!amp_issue)
+                if (!amp_issue || Amp_All_Optimizer)
                 {
                     SingletonMonoBehaviour<SoundController>.Instance.PlayUiSound(SingletonMonoBehaviour<SoundsStorage>.Instance.Amputation, false, 0f);
                 }

@@ -25,6 +25,7 @@ namespace GatherEntireFloorLoot
             //amp option?
 
             this.ModData.AddConfigValue("general", "Disable_Amp_All", false, "Disable Amputate All", "Turn it off if you do not want it.");
+            this.ModData.AddConfigValue("general", "Amp_All_Optimizer", false, "Optimize Amputate All", "The game was not meant to handle thousands of amputation. So we will use simplified ingame logic to brute force the solution. Enabling this will explode corpse instead of amputating them. \n<color=#f51b1b>Enabling this will ignore durability consumption req, amputation statistics, implant extract bonus and etc for the sake of better performance.</color>");
             this.ModData.AddConfigValue("general", "Amp_All_Uses_Dur", false, "Amp All Consume Durability", "Turn this on to make button require durability.");
 
             this.ModData.AddConfigValue("general", "about_final", "<color=#f51b1b>The game must be restarted after setting then saving this config to take effect.</color>\n");
