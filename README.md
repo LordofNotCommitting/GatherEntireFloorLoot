@@ -37,6 +37,12 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=3598569203
 
 Changelog:
 
+v1.04
+
+Amputated corpses now disappear.
+Since performance was absolute garbage when handling large amount of mass amputation via vanilla method,
+Added "Optimize Amputate All" option which will ignore durability consumption req, amputation statistics, implant extract bonus and etc for the sake of better performance.
+
 v1.03:
 
 Ditch usage of ticking time bomb that is State.Resolve function.
